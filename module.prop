@@ -1,0 +1,6 @@
+id=xposed_guard
+name=Xposed Guard · Vector/ZN 状态与一键恢复
+version=v1.3 (2026-09-29)
+versionCode=4
+author=Abel (by DeepSeek Harness)
+description=点击 action：显示 ZygiskNext 状态（Zygisk 注入 RUNNING/STOP_BY_USER/STOP_BY_CRASH、Zygote 监视器、问题模块并解出崩溃进程名）与 Vector 状态（守护进程/工作目录/最近注入事件）；仅当判定不健康时才恢复。恢复=以模块目录为工作目录重启 Vector 守护进程（Vector 注入失败时会自行重启一次框架，内核不重启）。⚠ zn_restart.sh 已于 2026-09-29 实测导致 App 全部无法启动（打断 zygote↔daemon 的 fd 通道），现已默认拒跑，必须加 --i-understand-the-risk。
