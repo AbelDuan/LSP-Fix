@@ -1,3 +1,10 @@
+## v1.4 (2026-09-30)
+
+- feat(action): action 改为 Vector 式软重启（setprop ctl.restart zygote，等价 VectorDaemon.kt:244 softReboot）；先打印 ZN/Vector 状态、3 分钟防连点锁、前后采样写入 last_softreboot.txt
+- docs: 新增 docs/vector-soft-reboot-implementation.md（源码级提取 + 调用链 + 实测 + RCA 修正）
+- chore(legacy): 旧方案（重启守护进程）备份到 legacy/action-daemon-restart.sh 与 legacy/zn_restart.sh
+- fix(rca): 修正「挂不上」首选恢复手段——应为软重启主 zygote，而非重启守护进程
+
 # Changelog
 
 遵循 Conventional Commits 风格的条目；版本号与本机 KSU 模块 `module.prop` 一致。

@@ -145,3 +145,17 @@ setsid /system/bin/app_process -Djava.class.path=$PWD/daemon.apk /system/bin \
 - 本模块的 action 在**判定需要恢复**时会重启 Vector 守护进程；**Vector 自身会重启一次 Android 框架（system_server）**（内核不重启，`uptime` 不归零）。这是 Vector 的设计，不是本模块在重启设备。
 - `zn_restart.sh` 已知会破坏 zygote↔daemon 通道，**仅在任何时刻都能接受一次完整开机的前提下**才允许复现，且默认拒跑。
 - 所有恢复操作都需要 root；本仓库不含任何遥测、不含网络请求。
+---
+
+## 附：v1.4（2026-09-30）action 已改为「Vector 式软重启」
+
+本 README 前文描述的 action 行为是 **v1.3** 的（重启 Vector 守护进程）。自 v1.4 起：
+
+- **action = Vector 式软重启**：`setprop ctl.restart zygote`（源码见
+  [docs/vector-soft-reboot-implementation.md](docs/vector-soft-reboot-implementation.md)），
+  即重启**主 zygote**，框架重建、**守护进程不动**、新框架由它自动注入。
+  代价：屏幕全灭约 20–40 秒、App 全部重启、**内核不重启**（uptime 不归零）；3 分钟防连点。
+- 执行前后采样写入模块目录 `last_softreboot.txt`；`sh action.sh status` 可只读预览。
+- 旧方案（重启守护进程）完整保留在 `legacy/action-daemon-restart.sh`，要回退就拷回 `action.sh`。
+- 实测（2026-09-30 16:14）：zygote64 30010→16532、system_server 30167→16688、vectord 11459 不变，
+  Vector 一次性注入成功 —— 这就是「用 Vector 的软重启每次都能挂上」的原因。
